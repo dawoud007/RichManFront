@@ -1,0 +1,316 @@
+﻿@inherits LayoutComponentBase
+@using System.IdentityModel.Tokens.Jwt
+@inject IAuthenticationService AuthenticationService
+
+
+<div class="page @sideTogglerClass @navTogglerClass">
+    @if (AuthenticationService.IsLoggedIn)
+    {
+
+        <div class="nav-bar mobile">
+            <button title="toggler" class="toggler side" @onclick="ToggleSide">
+                <div></div>
+                <div></div>
+                <div></div>
+            </button>
+
+            <div class="logo-container">
+                <a class="navbar-brand logo" href="">@successMessage</a>
+            </div>  
+        
+
+            <button title="toggler" class="toggler nav" @onclick="ToggleNav">
+                <div></div>
+                <div></div>
+                <div></div>
+            </button>
+            <div class="top-row">
+                <div class="left-wrapper">
+                    <button @onclick="TogglePasswordInput" class="nav-btn">المخفي</button>
+                    @if (showPasswordInput)
+                    {
+                        <div class="password-input">
+                            <input type="password"
+                           @bind="enteredPassword"
+                           class="hidden-password"
+                           placeholder="ادخل كلمة المرور" />
+                            <button @onclick="CheckPasswordAndShowLink" class="nav-btn">دخول</button>
+                        </div>
+                    }
+                    @if (showHiddenLink)
+                    {
+                        <div class="hidden-btns">
+                            <button class="btn btn-primary" @onclick="GoToAddBillPage">احصائيات</button>
+                            <button class="btn btn-primary" @onclick="AddWorkers">اضافة عمال</button>
+                        </div>
+                    }
+                </div>
+
+                <div class="sign-btns">
+                    <a class="sign-btn"  @onclick="LogoutUser">تسجيل خروج</a>
+                 
+               
+                    <a class="sign-btn" href="/signup">اضافة محل</a>
+                </div>
+            </div>
+        </div>
+
+     
+
+        @*<div class="sidebar">*@
+        <NavMenu />
+        @*</div>*@
+
+        <main class="main-content" style="margin-top:3.5rem">
+            l
+          
+                   
+            <article class="content px-4">
+                @Body
+            </article>
+        </main>
+    }
+    else
+    {
+        <!-- Display only the login form when the user is not logged in -->
+        <main class="center-content">
+
+            @using ElectronicsShop_service.Dtos
+            @inject HttpClient Http
+            @inject NavigationManager NavigationManager
+            @using Microsoft.JSInterop
+            @inject IJSRuntime JSRuntime
+            @inject IAuthenticationService AuthenticationService
+
+            <style>
+                /* Add your custom styles here */
+                h3 {
+                    font-size: 28px;
+                    margin-bottom: 20px;
+                    color: #11d;
+                }
+
+                .parent {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    height: 100vh;
+                    margin: 0;
+                    background-color: #f5f5f5; /* Adding a light background color */
+                }
+
+                .container {
+                    padding: 40px;
+                    border-radius: 10px;
+                    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    background-color: white;
+                    width: 350px;
+                }
+
+                .form-group {
+                    margin-bottom: 15px; /* Add some space between form groups */
+                }
+
+                    .form-group label {
+                        display: block; /* Labels are now block-level elements */
+                        color: #22a;
+                        font-weight: bold;
+                        margin-bottom: 5px; /* Adding space below labels */
+                    }
+
+                .form-control {
+                    padding: 8px;
+                    border: 1px solid #ccc;
+                    border-radius: 5px;
+                    width: 100%; /* Full-width input fields */
+                }
+
+
+                .login-button {
+                    background-color: #11d;
+                    color: white;
+                    padding: 10px 20px;
+                    border: none;
+                    border-radius: 5px;
+                    cursor: pointer;
+                    margin-top: 20px;
+                    font-weight: bold;
+                    transition: background-color 0.3s ease, color 0.3s ease;
+                }
+
+                    .login-button:hover {
+                        background-color: #0a0a8b; /* Slightly darker color on hover */
+                        color: white;
+                    }
+
+
+                /* Message styles */
+                .success-message,
+                .error-message {
+                    margin-top: 10px;
+                    text-align: center;
+                    font-size: 14px;
+                }
+
+            </style>
+
+            <div class="parent">
+                <div class="container">
+                    <h3>Rich Man</h3>
+                    <div class="form-group">
+                        <label for="username">اسم المستخدم</label>
+                        <input type="text" id="username" @bind="model.Username" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label for="password">كلمة المرور</label>
+                        <input type="password" id="password" @bind="model.Password" class="form-control" />
+                    </div>
+                    <button @onclick="LoginUser" class="login-button">دخول</button>
+                    @if (!string.IsNullOrEmpty(successMessage))
+                    {
+                        <div class="success-message"style="color:green;">
+                            @successMessage
+                        </div>
+                    }
+
+                    @if (!string.IsNullOrEmpty(errorMessage))
+                    {
+                        <div class="error-message"style="color:red;">
+                            @errorMessage
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Display messages -->
+            <!-- Display messages -->
+          
+
+            @code {
+            private List<Worker> workers = new List<Worker>();
+            public class LoginModel
+            {
+                public string? Username { get; set; }
+                public string? Password { get; set; }
+            }
+
+            public class AuthResponse
+            {
+                public string Token { get; set; }
+            }
+            private LoginModel model = new LoginModel();
+            private string successMessage = string.Empty;
+            private string errorMessage = string.Empty;
+            private async Task LoginUser()
+            {
+                var response = await Http.PostAsJsonAsync(sharedStateService.Api_Uri + "Shop/Login", model);
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = await response.Content.ReadFromJsonAsync<AuthResponse>();
+                    if (result != null && !string.IsNullOrEmpty(result.Token))
+                    {
+                        // Save the JWT token in local storage
+                        await JSRuntime.InvokeVoidAsync("localStorage.setItem", "accessToken", result.Token);
+                        await AuthenticationService.Login(result.Token);
+
+                        // Decode the JWT token to get claims
+                        var tokenHandler = new JwtSecurityTokenHandler();
+                        var jwtToken = tokenHandler.ReadJwtToken(result.Token);
+
+
+
+                        // Redirect to the dashboard or another authenticated page
+                        NavigationManager.NavigateTo("/");
+                        // Extract and display shopName claim
+
+                        if (jwtToken.Payload.TryGetValue("WhatToSee", out var shopNameClaim))
+                        {
+                            successMessage = shopNameClaim.ToString()!;
+                            Console.WriteLine(successMessage);
+                        }
+                        else
+                        {
+                            successMessage = string.Empty; // Clear the successMessage if the claim is not present
+                        }
+                    }
+                }
+                else
+                {
+                    // Handle login failure
+                    errorMessage = "تاكد من الاسم وكلمة السر";
+                }
+            }
+        }
+
+
+
+    </main>
+    }
+</div>
+
+@code {
+    private bool showPasswordInput = false;
+    private bool showHiddenLink = false;
+    private string enteredPassword = "";
+    private string correctPassword = "1234"; // Set your desired password here
+
+    private void TogglePasswordInput()
+    {
+        showPasswordInput = !showPasswordInput;
+        enteredPassword = "";
+        showHiddenLink = false;
+    }
+    void GoToAddBillPage()
+    {
+        NavigationManager.NavigateTo("/price-difference");
+
+    }
+    void AddWorkers()
+    {
+        NavigationManager.NavigateTo("/workers");
+    }
+    private void CheckPasswordAndShowLink()
+    {
+        if (enteredPassword == correctPassword)
+        {
+            showHiddenLink = true;
+            showPasswordInput = false;
+        }
+    }
+
+    private bool isNavOpen = false;
+
+    private string navTogglerClass => isNavOpen ? "nav-open" : "";
+
+    private void ToggleNav()
+    {
+        isNavOpen = !isNavOpen;
+    }
+
+    private bool isSideOpen = false;
+
+    private string sideTogglerClass => isSideOpen ? "side-open" : "";
+
+    private void ToggleSide()
+    {
+        isSideOpen = !isSideOpen;
+    }
+    private async Task LogoutUser()
+    {
+        // Clear the JWT token from local storage
+        await JSRuntime.InvokeVoidAsync("localStorage.removeItem", "accessToken");
+
+        // Call the logout method from the AuthenticationService
+        await AuthenticationService.Logout();
+
+        // Redirect to the login page or another appropriate page
+    
+
+        successMessage = string.Empty; // Reset the successMessage
+    }
+
+
+}

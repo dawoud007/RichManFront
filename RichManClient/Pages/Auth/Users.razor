@@ -1,0 +1,101 @@
+﻿@page "/userlist"
+@using ElectronicsShop_service.Models
+@using Microsoft.AspNetCore.Components.Authorization
+@inject HttpClient Http
+@inject AuthService AuthService
+@inject NavigationManager NavigationManager
+@using Microsoft.JSInterop
+@inject IJSRuntime JSRuntime
+@inject IAuthenticationService AuthenticationService
+@using System.IdentityModel.Tokens.Jwt
+
+
+<h3>قائمة المحلات</h3>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>الاسم</th>
+            <th>المنصب</th>
+            <th>اسم المحل</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (users != null && users.Count > 0)
+        {
+            @foreach (var user in users)
+            {
+                <tr>
+                    <td>@user.UserName</td>
+                    <td>@user.Role</td>
+                    <td>@user.WhatToSee</td>
+                    <td>
+                        @if (successMessage == "Admin")
+                        {
+                            <button class="btn btn-danger" style="background-color:red;" @onclick="() => DeleteUser(user)">حذف محل</button>
+                        }
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="4">لا يوجد محلات</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    private string successMessage = string.Empty;
+    private List<Shop> users = new List<Shop>();
+    protected override async Task OnInitializedAsync()
+    {
+
+        var token = await AuthService.GetAccessTokenAsync();
+
+        // Set the authorization header for the HttpClient
+        if (!string.IsNullOrEmpty(token))
+        {
+            Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var jwtToken = tokenHandler.ReadJwtToken(token);
+
+            // Extract and display shopName claim
+            if (jwtToken.Payload.TryGetValue("Role", out var shopNameClaim))
+            {
+                Console.WriteLine(successMessage);
+                successMessage = $"{shopNameClaim}";
+            }
+
+        }
+
+        if (!string.IsNullOrEmpty(token))
+        {
+            await LoadUsers();
+        }
+    }
+
+    private async Task LoadUsers()
+    {
+        users = await Http.GetFromJsonAsync<List<Shop>>(sharedStateService.Api_Uri + "Shop/GetAllUsers")!;
+    }
+
+    private async Task DeleteUser(Shop user)
+    {
+        Console.WriteLine(user.Id);
+        var result = await Http.DeleteAsync(sharedStateService.Api_Uri + $"Shop/Delete/{user.Id}");
+        if (result.IsSuccessStatusCode)
+        {
+            users.Remove(user);
+        }
+        else
+        {
+            // Handle error here
+        }
+    }
+}

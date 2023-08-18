@@ -1,0 +1,195 @@
+﻿@page "/editcloth/{clothId:guid}"
+@using ElectronicsShop_service.Dtos;
+@using RichManClient.Pages;
+@using System.Text.Json
+@using Microsoft.AspNetCore.Components
+@inject HttpClient Http
+@inject AuthService AuthService
+@inject NavigationManager NavigationManager
+
+<style>
+    /* Center content vertically and horizontally */
+    .center-content {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+    }
+</style>
+
+<h3>تعديل بيانات الفاتورة</h3>
+
+<div class="center-content">
+    <style>
+        /* Add your custom styles here */
+        .form-group label {
+            font-weight: bold;
+        }
+
+        .form-control {
+            border-color: blue;
+        }
+
+        .btn-primary {
+            background-color: #11d;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+            font-weight: bold;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+            .btn-primary:hover {
+                background-color: #0a0a8b;
+                color: white;
+            }
+
+        .container {
+            width: 50%;
+            background-color: #f5f5f5;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .form-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            width: 100%;
+        }
+
+        .options {
+            min-width: 400px;
+            width: 70%;
+            margin: auto;
+            background-color: #ffffffc7;
+            padding: 2rem;
+            border-radius: 4rem;
+            color: #11d;
+            box-shadow: 0 0 1rem rgba(0, 0, 0, 0.2);
+            margin-top: 1rem;
+        }
+
+            .options .form-control {
+                background-color: #fff;
+            }
+
+        .clothes {
+            width: 300px;
+            margin: auto;
+            color: #11d;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h3,
+        h4 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #000;
+        }
+    </style>
+
+    <EditForm Model="@bill" OnValidSubmit="UpdateBill">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="form-group">
+            <label for="Name">اسم المشتري:</label>
+            <InputText id="Name" class="form-control" @bind-Value="bill.Name" />
+        </div>
+        <div class="form-group">
+            <label for="Size">المقاس:</label>
+            <InputNumber id="Size" class="form-control" @bind-Value="bill.Size" />
+        </div>
+        <div class="form-group">
+            <label for="type">الماركة:</label>
+            <InputText id="type" class="form-type" @bind-Value="bill.type" />
+        </div>
+        <div class="form-group">
+            <label for="limit">الحد الاقل:</label>
+            <InputNumber id="limit" class="form-control" @bind-Value="bill.limit" />
+        </div>
+        <div class="form-group">
+            <label for="Color">اللون:</label>
+            <InputText id="Color" class="form-control" @bind-Value="bill.Color" />
+        </div>
+        <div class="form-group">
+            <label for="Gomla">سعر الجملة:</label>
+            <InputNumber id="Gomla" class="form-control" @bind-Value="bill.Gomla" />
+        </div>
+        <div class="form-group">
+            <label for="NumOfPieces">العدد الكلي:</label>
+            <InputNumber id="NumOfPieces" class="form-control" @bind-Value="bill.NumOfPieces" />
+        </div>
+
+        <div class="form-group">
+            <a type="submit" class="btn btn-success" @onclick="UpdateBill">حفظ التعديلات</a>
+            <a class="btn btn-secondary" @onclick="GoBack">العودة</a>
+        </div>
+    </EditForm>
+</div>
+@code {
+    private Cloth bill = new Cloth();
+    [Parameter] public Guid clothId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var token = await AuthService.GetAccessTokenAsync();
+
+        if (!string.IsNullOrEmpty(token))
+        {
+            Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+        }
+
+        try
+        {
+            bill = await Http.GetFromJsonAsync<Cloth>(sharedStateService.Api_Uri + $"Cloth/GetBillById?id={clothId}");
+        }
+        catch (Exception ex)
+        {
+            // Handle any errors during the API call
+            // You can display an error message to the user or log the error for debugging
+        }
+    }
+
+    private async Task UpdateBill()
+    {
+        try
+        {
+            var response = await Http.PutAsJsonAsync(sharedStateService.Api_Uri + $"Cloth/UpdateCloth?id={bill.Id}", bill);
+
+            if (response.IsSuccessStatusCode)
+            {
+                NavigationManager.NavigateTo("/");
+            }
+            else
+            {
+                // Handle error if necessary
+                // You can display an error message or take appropriate action
+            }
+        }
+        catch (Exception ex)
+        {
+            // Handle errors
+            // You can display an error message or take appropriate action
+        }
+    }
+
+    private void GoBack()
+    {
+        NavigationManager.NavigateTo("/bills");
+    }
+}

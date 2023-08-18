@@ -1,0 +1,127 @@
+﻿@page "/bills"
+@using System.Text.Json
+@using Microsoft.AspNetCore.Components
+@inject HttpClient Http
+@inject AuthService AuthService
+@inject NavigationManager NavigationManager
+
+<PageTitle>فاتورة</PageTitle>
+
+
+
+<div class="d-flex justify-content-between">
+    <button class="btn btn-outline-primary" @onclick="GoToAddBillPage">اضافة فاتورة</button>
+    <button class="btn btn-outline-danger" @onclick="GoToSearchBillPage">البحث عن فاتورة</button>
+</div>
+
+@if (bills == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>اسم المشتري</th>
+                <th>اسم المحل</th>
+                <th>تفاصيل</th>
+              
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var bill in bills)
+            {
+                <tr>
+                    <td>@bill.BuyerName</td>
+                    <td>@bill.SellerName</td>
+                    <td>@bill.Description</td>
+               
+                    
+                
+                    <td>
+                    @*    <button class="btn btn-success" @onclick="() => NavigateToUpdateBill(bill.Id)">تعديل</button>*@
+                        <button class="btn btn-danger" @onclick="() => DeleteBill(bill)">مسح</button>
+                        <button class="btn btn-info" @onclick="() => NavigateToBillDetail(bill.Id)">دخول</button>
+
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+@if (selectedBill != null)
+{
+    <BillDetail BillId="@selectedBill.Id" />
+}
+
+@code {
+   
+    private List<BillDto> bills = new List<BillDto>();
+    private BillDto selectedBill;
+   
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Get the JWT token from the AuthService
+        var token = await AuthService.GetAccessTokenAsync();
+
+        // Set the authorization header for the HttpClient
+        if (!string.IsNullOrEmpty(token))
+        {
+            Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+        }
+
+        // Make the API call
+        try
+        {
+
+            bills = await Http.GetFromJsonAsync<List<BillDto>>(sharedStateService.Api_Uri + "Bill/GetAll")!;
+        }
+        catch (Exception ex)
+        {
+            // Handle any errors during the API call
+            // You can display an error message to the user or log the error for debugging
+        }
+
+      
+
+        // Make the API call
+    
+    }
+    void GoToAddBillPage()
+    {
+        NavigationManager.NavigateTo("/addbill");
+    }
+
+    void GoToSearchBillPage()
+    {
+        NavigationManager.NavigateTo("/SearchBills");
+    }
+
+    private async Task DeleteBill(BillDto bill)
+    {
+        HttpClient httpClient = new HttpClient();
+        var response = await httpClient.DeleteAsync(sharedStateService.Api_Uri + "Bill/Delete/" + bill.Id);
+
+        if (response.IsSuccessStatusCode)
+        {
+            bills.Remove(bill);
+        }
+        else
+        {
+            // Handle error if necessary
+            // You can show a toast or a message indicating the deletion failed
+        }
+    }
+    void NavigateToBillDetail(Guid billId)
+    {
+        NavigationManager.NavigateTo($"/billdetail/{billId}");
+    }
+
+    void NavigateToUpdateBill(Guid billId)
+    {
+        NavigationManager.NavigateTo($"/updatebill/{billId}");
+    }
+
+}

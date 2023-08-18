@@ -1,0 +1,158 @@
+﻿@page "/SearchBills"
+@using System.Net.Http.Json
+@using Microsoft.AspNetCore.Components
+@inject HttpClient Http
+
+<PageTitle>ابحث باسم المشتري</PageTitle>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <h3 class="text-center mb-4">ابحث باسم المشتري</h3>
+            <div>
+                <div class="form-group">
+                    <label for="buyerNameInput" class="form-label">Buyer Name</label>
+                    <input type="text" class="form-control" id="buyerNameInput" @bind="searchedBuyerName" />
+                </div>
+                <div class="text-center">
+                    <button type="button" class="btn btn-primary btn-search" @onclick="Search">بحث</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5 justify-content-center">
+        <div class="col-md-8">
+            @if (isError)
+            {
+                <div class="error-message">
+                    @errorMessage
+                </div>
+            }
+            else if (bills.Count == 0)
+            {
+                <p class="text-center"><em>لا يوجد فاتورة مماثلة</em></p>
+            }
+            else
+            {
+                foreach (var bill in bills)
+                {
+                    <div class="card">
+                        <div class="card-header">
+                        تفاصيل الفاتورة
+                        </div>
+                        <div class="card-body">
+                            <p><strong>اسم المشتري:</strong> @bill.BuyerName</p>
+                            <p><strong>اسم المحل:</strong> @bill.SellerName</p>
+                            <p><strong>تفاصيل:</strong> @bill.Description</p>
+                        
+                            <!-- Display suits if available -->
+                            @if (bill.Suits != null && bill.Suits.Any())
+                            {
+                                <h5>Suits:</h5>
+                                <ul>
+                                    @foreach (var suit in bill.Suits)
+                                    {
+                                        <li>@suit.Name - @suit.Color - @suit.Size - @suit.type</li>
+                                    }
+                                </ul>
+                            }
+                        </div>
+                    </div>
+                }
+               
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Custom CSS for styling */
+      .btn-search {
+        background-color: #11d;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 20px;
+        font-weight: bold;
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
+
+      .btn-search:hover {
+        background-color: #071952; /* Slightly darker color on hover */
+        /* color: #000; */
+      }
+
+      /* Adjust the form inputs' styles */
+      .form-control {
+        border-color: black;
+        border-width: 2px;
+      }
+
+      /* Set a custom width for the form */
+      .col-md-6 {
+        max-width: 400px;
+      }
+
+      /* Add some space between the card and the form */
+      .mt-5 {
+        margin-top: 30px;
+      }
+      .card {
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+      }
+      .card-header {
+        background-color: #000000d8;
+        color: #fff;
+      }
+      h3,
+      h4 {
+        font-size: 2rem;
+        font-weight: 600;
+        color: #000;
+      }
+</style>
+
+@code {
+    private string searchedBuyerName;
+    private List<BillDto> bills=new();
+    private bool isRegistered = false; // Flag to show success message
+    private bool isError = false; // Flag to show error message
+    private string errorMessage = "there is no bills with this buyer name"; // Error message text
+    private async Task Search()
+    {
+        try
+        {
+            // Make the GET request with the searchedBuyerName as a query parameter
+            var response = await Http.GetFromJsonAsync<List<BillDto>>(sharedStateService.Api_Uri + "Bill/GetBillWithBuyerName?searchedBuyertName=" + searchedBuyerName);
+
+            if (response != null )
+            {
+                // Store the retrieved bill in the 'bill' variable
+                bills = response;
+
+                // Reset error flags if the request is successful
+                isError = false;
+                errorMessage = "there is no bills with this buyer name";
+            }
+            else
+            {
+                // If no bill is found, reset the 'bill' variable
+                bills = null;
+
+                // Set error flags and update the error message
+                isError = true;
+                errorMessage = "No matching bill found with the provided buyer name.";
+            }
+        }
+        catch (Exception ex)
+        {
+            // Handle any exceptions that occur during the API request
+            // Set error flags and update the error message
+            isError = true;
+            errorMessage = "حدث خطا يرجى ادخال قيمة صحيحة";
+        }
+    }
+}

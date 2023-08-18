@@ -1,0 +1,266 @@
+/*.page {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+}
+
+.sidebar {
+    background-color:black;
+}
+
+.top-row {
+    background-color: #f7f7f7;
+    border-bottom: 1px solid #d6d5d5;
+    justify-content: flex-end;
+    height: 3.5rem;
+    display: flex;
+    align-items: center;
+}
+
+    .top-row ::deep a, .top-row ::deep .btn-link {
+        white-space: nowrap;
+        margin-left: 1.5rem;
+        text-decoration: none;
+    }
+
+        .top-row ::deep a:hover, .top-row ::deep .btn-link:hover {
+            text-decoration: underline;
+        }
+
+        .top-row ::deep a:first-child {
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+@media (max-width: 640.98px) {
+    .top-row:not(.auth) {
+        display: none;
+    }
+
+    .top-row.auth {
+        justify-content: space-between;
+    }
+
+    .top-row ::deep a, .top-row ::deep .btn-link {
+        margin-left: 0;
+    }
+}
+
+@media (min-width: 641px) {
+    .page {
+        flex-direction: row;
+    }
+
+    .sidebar {
+        width: 150px;
+        height: 100vh;
+        position: sticky;
+        top: 0;
+    }
+
+    .top-row {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+
+        .top-row.auth ::deep a:first-child {
+            flex: 1;
+            text-align: right;
+            width: 0;
+        }
+
+    .top-row, article {
+        padding-left: 2rem !important;
+        padding-right: 1.5rem !important;
+    }
+}
+*/
+.password-input {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.page {
+   
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+}
+
+.logo {
+    color: #000;
+    font-size: 1.3rem;
+    font-weight: 700;
+}
+
+    .logo:hover {
+        color: #000;
+    }
+
+.nav-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #f7f7f7;
+    z-index: 1;
+    height: 3.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1rem;
+}
+
+.top-row {
+    width: 100%;
+    height: 100%;
+    background-color: #f7f7f7;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.toggler {
+    width: 2.5rem;
+    background-color: rgba(240, 255, 255, 0.559);
+    border: 2px solid gray;
+    border-radius: 5px;
+    padding: 5px;
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+}
+
+    .toggler.side {
+        display: flex;
+        margin-right: 0.5rem;
+    }
+
+    .toggler div {
+        width: 100%;
+        height: 3px;
+        border-radius: 2px;
+        background-color: #000;
+    }
+
+.left-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.hidden-btns {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.nav-btn {
+    background-color: #11d;
+    color: white;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+    .nav-btn:hover {
+        background-color: #0a0a8b; /* Slightly darker color on hover */
+        color: white;
+    }
+
+.hidden-password {
+    border: 1px solid rgba(128, 128, 128, 0.761);
+    border-radius: 5px;
+    padding: 5px 10px;
+    outline: none;
+}
+
+    .hidden-password:focus {
+        box-shadow: 0 0 5px #1864ab;
+    }
+
+.sign-btns {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.sign-btn {
+    background-color: #1864ab;
+    color: #fff;
+    padding: 5px 10px;
+    text-decoration: none;
+    border-radius: 10px;
+    transition: background-color 300ms;
+}
+
+    .sign-btn:hover {
+        background-color: #228be6;
+        color: #fff;
+    }
+
+@media (max-width: 1050px) {
+    .nav-bar {
+        background-color: #0a0a8b;
+    }
+
+    .logo {
+        color: #fff;
+    }
+
+        .logo:hover {
+            color: #fff;
+        }
+
+    .top-row {
+        display: none;
+    }
+
+    .nav-open .top-row {
+        display: flex;
+    }
+
+    .toggler {
+        display: flex;
+    }
+
+    .mobile .top-row {
+        padding: 2rem 0;
+        width: 280px;
+        height: calc(100vh - 3.5rem);
+        background-color: #000000d3;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 2rem;
+        align-items: center;
+        position: absolute;
+        top: 3.4rem;
+        right: -1px;
+    }
+
+    .mobile .left-wrapper {
+        flex-direction: column;
+        width: 100%;
+        gap: 2rem;
+    }
+
+    .mobile .hidden-btns {
+        background-color: #000000df;
+        padding: 2rem 1rem;
+        justify-content: space-between;
+        width: 100%;
+    }
+}
+

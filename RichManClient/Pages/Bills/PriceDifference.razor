@@ -1,0 +1,147 @@
+﻿@page "/price-difference"
+@using System.Text.Json
+@using Microsoft.AspNetCore.Components
+@inject HttpClient Http
+@inject AuthService AuthService
+@inject NavigationManager NavigationManager
+
+<PageTitle>فاتورة</PageTitle>
+
+<div class="form-group">
+    <label>اسم العامل</label>
+    <select class="form-control" @onclick="FetchWorkers" @onchange="FilterBillsByWorker">
+        <option value="">اختر العامل</option>
+        @foreach (var worker in Workers)
+        {
+            <option value="@worker.WorkerName">@worker.WorkerName</option>
+        }
+    </select>
+</div>
+@if (filteredBills == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>اسم المشتري</th>
+                <th>اسم البائع</th>
+                <th>سعر البيع</th>
+                <th>الربح</th>
+                <th>التاريخ</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var bill in filteredBills)
+            {
+                <tr>
+                    <td>@bill.BuyerName</td>
+                    <td>@bill.WorkerName</td>
+                    <td>@bill.SellingPricee</td>
+                    <td>@bill.ProfitDifference</td>
+                    <td>@bill.DateCreated</td>
+                    <td>
+                        <button class="btn btn-danger" @onclick="() => DeleteBill(bill)">مسح</button>
+                        <button class="btn btn-info" @onclick="() => NavigateToBillDetail(bill.Id)">دخول</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+@if (selectedBill != null)
+{
+    <BillDetail BillId="@selectedBill.Id" />
+}
+
+@code {
+
+    private List<BillDto> bills = new List<BillDto>();
+    private List<BillDto> filteredBills = new List<BillDto>();
+    private BillDto selectedBill;
+    private List<Worker> Workers { get; set; } = new List<Worker>();
+
+    private async Task FetchWorkers()
+    {
+        try
+        {
+            Workers = await Http.GetFromJsonAsync<List<Worker>>(sharedStateService.Api_Uri + "Shop/GetWorkersToShop");
+        }
+        catch (Exception ex)
+        {
+            // Handle API call errors
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Get the JWT token from the AuthService
+        var token = await AuthService.GetAccessTokenAsync();
+
+        // Set the authorization header for the HttpClient
+        if (!string.IsNullOrEmpty(token))
+        {
+            Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+        }
+
+        // Make the API call
+        try
+        {
+            bills = await Http.GetFromJsonAsync<List<BillDto>>(sharedStateService.Api_Uri + "Bill/GetAll")!;
+            filteredBills = bills; // Initialize filteredBills with all bills initially
+        }
+        catch (Exception ex)
+        {
+            // Handle any errors during the API call
+            // You can display an error message to the user or log the error for debugging
+        }
+    }
+
+    void GoToAddBillPage()
+    {
+        NavigationManager.NavigateTo("/addbill");
+    }
+
+    void GoToSearchBillPage()
+    {
+        NavigationManager.NavigateTo("/SearchBills");
+    }
+
+    private async Task DeleteBill(BillDto bill)
+    {
+        HttpClient httpClient = new HttpClient();
+        var response = await httpClient.DeleteAsync(sharedStateService.Api_Uri + "Bill/Delete/" + bill.Id);
+
+        if (response.IsSuccessStatusCode)
+        {
+            bills.Remove(bill);
+            filteredBills.Remove(bill); // Remove from filteredBills as well
+        }
+        else
+        {
+            // Handle error if necessary
+            // You can show a toast or a message indicating the deletion failed
+        }
+    }
+
+    void NavigateToBillDetail(Guid billId)
+    {
+        NavigationManager.NavigateTo($"/billdetail/{billId}");
+    }
+
+    private void FilterBillsByWorker(ChangeEventArgs e)
+    {
+        var selectedWorkerName = e.Value.ToString();
+        if (string.IsNullOrEmpty(selectedWorkerName))
+        {
+            filteredBills = bills; // Show all bills if no worker is selected
+        }
+        else
+        {
+            filteredBills = bills.Where(b => b.WorkerName == selectedWorkerName).ToList(); // Filter bills by selected worker
+        }
+    }
+}

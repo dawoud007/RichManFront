@@ -1,0 +1,97 @@
+﻿@inject IAuthenticationService AuthenticationService
+@inherits LayoutComponentBase
+@*<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="">RichMan</a>
+        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+</div>*@
+
+@*<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+    <nav class="flex-column">
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <span class="oi oi-home" aria-hidden="true"></span> جميع القطع
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="search">
+                <span class="oi oi-magnifying-glass" aria-hidden="true"></span> بحث
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="bills">
+                <span class="oi oi-command" aria-hidden="true"></span> الفواتير
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="statics">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> الاحصائيات
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="userlist">
+                <span class="oi oi-people" aria-hidden="true"></span> المحلات
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="money-dashboard">
+                <span class="oi oi-euro" aria-hidden="true"></span>الخزنة
+            </NavLink>
+        </div>
+        
+    </nav>
+</div>*@
+
+<div class="sidebar">
+    <!-- <nav class="flex-column"> -->
+    <div class="nav-item">
+        <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+            <span class="oi oi-home" aria-hidden="true"></span> جميع القطع
+        </NavLink>
+    </div>
+    <div class="nav-item">
+        <NavLink class="nav-link" href="search">
+            <span class="oi oi-magnifying-glass" aria-hidden="true"></span> بحث
+        </NavLink>
+    </div>
+
+    <div class="nav-item">
+        <NavLink class="nav-link" href="bills">
+            <span class="oi oi-command" aria-hidden="true"></span> الفواتير
+        </NavLink>
+    </div>
+    <div class="nav-item">
+        <NavLink class="nav-link" href="statics">
+            <span class="oi oi-list-rich" aria-hidden="true"></span> الاحصائيات
+        </NavLink>
+    </div>
+    <div class="nav-item">
+        <NavLink class="nav-link" href="userlist">
+            <span class="oi oi-people" aria-hidden="true"></span> المحلات
+        </NavLink>
+    </div>
+
+    <div class="nav-item">
+        <NavLink class="nav-link" href="money-dashboard">
+            <span class="oi oi-euro" aria-hidden="true"></span>الخزنة
+        </NavLink>
+    </div>
+    <!-- </nav> -->
+</div>
+
+@code {
+    [Parameter] public bool ShowHiddenLink { get; set; }
+    private bool collapseNavMenu = true;
+
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}

@@ -1,0 +1,188 @@
+﻿@page "/workers"
+@using ElectronicsShop_service.Dtos
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+<style>
+    .container {
+        width: 80%;
+        margin: auto;
+    }
+
+    .form-wrapper {
+        margin-top: 20px;
+    }
+
+    .btn-primary {
+        background-color: #11d;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 10px;
+        font-weight: bold;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+        .btn-primary:hover {
+            background-color: #0a0a8b;
+        }
+
+    .options {
+        margin-top: 20px;
+    }
+
+    .worker-info {
+        margin: 5px 0;
+        padding: 5px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+    }
+
+    .delete-button {
+        margin-top: 10px;
+    }
+</style>
+
+<div class="container">
+    <!-- Add Worker Section -->
+    <h3>اضف عامل</h3>
+
+    <form class="form-wrapper">
+        <div class="options">
+            <div class="form-group">
+                <label>اسم العامل</label>
+                <input type="text" class="form-control" @bind="@workerName" />
+            </div>
+        </div>
+
+        <button type="button" class="btn btn-primary" @onclick="AddWorkersToShop">اضف عامل</button>
+    </form>
+
+    <!-- Get Workers Section -->
+    <h3>قائمة العمال</h3>
+
+    <div class="options">
+        @if (workers != null)
+        {
+            @foreach (var worker in workers)
+            {
+                <div class="worker-info">
+                    <p>@worker.WorkerName - @worker.WhatToSee</p>
+                </div>
+            }
+        }
+    </div>
+
+    <!-- Refresh Workers List Button -->
+    <button type="button" class="btn btn-success" @onclick="FetchWorkers">تحديث قائمة العمال</button>
+
+    <!-- Delete Worker Section -->
+    <h3>حذف عامل</h3>
+
+    <form class="form-wrapper">
+        <div class="options">
+            <div class="form-group">
+                <label>اختر العامل للحذف</label>
+                <select class="form-control" @bind="@selectedWorker">
+                    <option value="">اختر العامل</option>
+                    @foreach (var worker in workers)
+                    {
+                        <option value="@worker.WorkerName">@worker.WorkerName</option>
+                    }
+                </select>
+            </div>
+        </div>
+
+        <button type="button" class="btn btn-danger delete-button" @onclick="DeleteWorkersFromShop">حذف عامل</button>
+    </form>
+</div>
+@code {
+    private List<Worker> workers = new List<Worker>();
+    private string workerName;
+    private string whatToSee;
+    private string selectedWorker;
+
+    private async Task AddWorkersToShop()
+    {
+        try
+        {
+            
+            var response = await Http.PostAsJsonAsync(sharedStateService.Api_Uri + "Shop/AddWorkersToShop", workerName);
+
+            if (response.IsSuccessStatusCode)
+            {
+                // Handle success
+                await FetchWorkers(); // Fetch updated list immediately
+            }
+            else
+            {
+                // Handle failure
+            }
+        }
+        catch (Exception ex)
+        {
+            // Handle exception
+        }
+    }
+
+    private async Task FetchWorkers()
+    {
+        try
+        {
+            var token = await AuthService.GetAccessTokenAsync();
+            Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            workers = await Http.GetFromJsonAsync<List<Worker>>(sharedStateService.Api_Uri + "Shop/GetWorkersToShop");
+        }
+        catch (Exception ex)
+        {
+            // Handle exception
+        }
+    }
+
+  
+    private async Task DeleteWorkersFromShop()
+    {
+        var token = await AuthService.GetAccessTokenAsync();
+
+        // Set the authorization header for the HttpClient
+        if (!string.IsNullOrEmpty(token))
+        {
+            Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+        }
+
+        var workerToDelete = workers.FirstOrDefault(w => w.WorkerName == selectedWorker);
+        var response = await Http.DeleteAsync(sharedStateService.Api_Uri + "Shop/DeleteWorkersFromShop?workersToDelete=" + workerToDelete.WorkerName);
+
+        if (response.IsSuccessStatusCode)
+        {
+            workers.Remove(workerToDelete);
+            await FetchWorkers(); // Fetch updated list immediately
+        }
+        else
+        {
+            // Handle error if necessary
+            // You can show a toast or a message indicating the deletion failed
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+    // ... Your existing code ...
+
+    protected override async Task OnInitializedAsync()
+    {
+        await FetchWorkers();
+    }
+}

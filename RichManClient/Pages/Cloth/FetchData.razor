@@ -1,0 +1,216 @@
+﻿@page "/"
+@using System.Text.Json
+@using Microsoft.AspNetCore.Components
+@inject HttpClient Http
+@inject AuthService AuthService
+@inject NavigationManager NavigationManager
+
+<PageTitle>قطع المحل</PageTitle>
+
+
+
+<div class="d-flex justify-content-end mb-3">
+    <button class="btn btn-primary" @onclick="GoToAddClothPage">اضف قطعة</button>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>الاسم</th>
+            <th>اللون</th>
+            <th>المقاس</th>
+            <th>الماركة</th>
+            <th>عدد القطع</th>
+         
+       
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var cloth in cloths)
+        {
+            @if (cloth.BillId == null)
+            {
+                <tr>
+                    <td>@cloth.Name</td>
+                    <td>@cloth.Color</td>
+                    <td>@cloth.Size</td>
+                    <td>@cloth.type</td>
+                    <td>@cloth.NumOfPieces</td>
+                  
+
+                 
+                 
+                    <td>
+                      @*  <button class="btn btn-danger" @onclick="() => DeleteCloth(cloth)">مسح</button>*@
+                        <button class="btn btn-warning" @onclick="() => ToggleClothDetails(cloth)">دخول</button>
+                        <button class="btn btn-success" @onclick="() => NavigateToUpdateCloth(cloth.Id)">تعديل</button>
+
+                    </td>
+                    @if (cloth.NumOfPieces <= cloth.limit)
+                    {
+                        <td style="background-color:red;">@cloth.NumOfPieces</td>
+                    }
+                </tr>
+                @if (selectedClothId == cloth.Id)
+                {
+                    <tr class="cloth-details">
+                        <td colspan="10">
+                            <table class="cloth-details-table">
+                                <tbody>
+                                    <tr>
+                                        <td class="table-variable">الاسم</td>
+                                        <td>@cloth.Name</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="table-variable">الماركة</td>
+                                        <td>@cloth.type</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="table-variable">المقاس</td>
+                                        <td>@cloth.Size</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="table-variable">سعر البيع</td>
+                                        <td>@cloth.Gomla</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class="table-variable">اللون</td>
+                                        <td>@cloth.Color</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="table-variable">عدد القطع</td>
+                                        <td>@cloth.NumOfPieces</td>
+                                    </tr>
+                                  
+
+                                    @if (!string.IsNullOrEmpty(cloth.Note))
+                                    {
+                                        <tr>
+                                            <td class="table-variable">ملاحظة</td>
+                                            <td>@cloth.Note</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                            <button class="btn btn-warning" @onclick="HideClothDetails">اخفاء</button>
+                        </td>
+                    </tr>
+                }
+
+            }
+        }
+    </tbody>
+</table>
+
+<style>
+
+    .cloth-details {
+        background-color: #d9e7fc;
+        border-bottom: 2px solid black; /* Add separator between rows */
+    }
+
+    .cloth-details-table {
+        width: 100%;
+    }
+
+    .table-variable {
+        font-weight: bold;
+        color: blue;
+    }
+
+    /* Add black color to specific styles */
+    .cloth-details-table td {
+        color: black; /* Apply black color to all table cells in the detailed view */
+    }
+    .cloth-details {
+        background-color: #d9e7fc;
+     
+    }
+
+    .cloth-details-table {
+        width: 100%;
+    }
+
+    .table-variable {
+        font-weight: bold;
+        color: blue;
+    }
+</style>
+
+@code {
+    private List<Cloth> cloths = new List<Cloth>();
+    private Guid selectedClothId = Guid.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Get the JWT token from the AuthService
+        var token = await AuthService.GetAccessTokenAsync();
+
+        // Set the authorization header for the HttpClient
+        if (!string.IsNullOrEmpty(token))
+        {
+            Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+        }
+
+        // Make the API call
+        try
+        {
+            cloths = await Http.GetFromJsonAsync<List<Cloth>>(sharedStateService.Api_Uri + "Cloth/GetAll")!;
+        }
+        catch (Exception ex)
+        {
+            // Handle any errors during the API call
+            // You can display an error message to the user or log the error for debugging
+        }
+    }
+
+    void GoToAddClothPage()
+    {
+        NavigationManager.NavigateTo("/addcloth");
+    }
+
+    private async Task DeleteCloth(Cloth cloth)
+    {
+        HttpClient httpClient = new HttpClient();
+        var response = await httpClient.DeleteAsync(sharedStateService.Api_Uri + "Cloth/Delete/" + cloth.Id);
+
+        if (response.IsSuccessStatusCode)
+        {
+            cloths.Remove(cloth);
+        }
+        else
+        {
+            // Handle error if necessary
+            // You can show a toast or a message indicating the deletion failed
+        }
+    }
+
+    void ToggleClothDetails(Cloth cloth)
+    {
+        if (selectedClothId == cloth.Id)
+        {
+            // If the selected cloth is already visible, hide it
+            selectedClothId = Guid.Empty;
+        }
+        else
+        {
+            // Show the details of the selected cloth
+            selectedClothId = cloth.Id;
+        }
+    }
+
+    void HideClothDetails()
+    {
+        // Hide the cloth details
+        selectedClothId = Guid.Empty;
+    }
+
+    void NavigateToUpdateCloth(Guid clothId)
+    {
+        NavigationManager.NavigateTo($"/editcloth/{clothId}");
+    }
+}
+
+
+

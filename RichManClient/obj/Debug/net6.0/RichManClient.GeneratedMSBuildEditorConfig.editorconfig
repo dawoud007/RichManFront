@@ -1,0 +1,111 @@
+is_global = true
+build_property.TargetFramework = net6.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = 
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = false
+build_property.PlatformNeutralAssembly = 
+build_property._SupportedPlatformList = browser
+build_property.EnableSingleFileAnalyzer = 
+build_property.EnableTrimAnalyzer = true
+build_property.IncludeAllContentForSelfExtract = 
+build_property.RootNamespace = RichManClient
+build_property.RootNamespace = RichManClient
+build_property.ProjectDir = C:\Users\Mo Dawoud\Desktop\front\RichManClient\
+build_property.RazorLangVersion = 6.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = C:\Users\Mo Dawoud\Desktop\front\RichManClient
+build_property._RazorSourceGeneratorDebug = 
+
+[C:/Users/Mo Dawoud/Desktop/front/RichManClient/App.razor]
+build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Mo Dawoud/Desktop/front/RichManClient/Pages/Auth/SignUp.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQXV0aFxTaWduVXAucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Mo Dawoud/Desktop/front/RichManClient/Pages/Auth/Users.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQXV0aFxVc2Vycy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Mo Dawoud/Desktop/front/RichManClient/Pages/Auth/Workers.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQXV0aFxXb3JrZXJzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Mo Dawoud/Desktop/front/RichManClient/Pages/Bills/AddBill.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQmlsbHNcQWRkQmlsbC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Mo Dawoud/Desktop/front/RichManClient/Pages/Bills/BillDetails.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQmlsbHNcQmlsbERldGFpbHMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Mo Dawoud/Desktop/front/RichManClient/Pages/Bills/FetchBills.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQmlsbHNcRmV0Y2hCaWxscy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Mo Dawoud/Desktop/front/RichManClient/Pages/Bills/PriceDifference.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQmlsbHNcUHJpY2VEaWZmZXJlbmNlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Mo Dawoud/Desktop/front/RichManClient/Pages/Bills/SearchBills.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQmlsbHNcU2VhcmNoQmlsbHMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Mo Dawoud/Desktop/front/RichManClient/Pages/Bills/Update.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQmlsbHNcVXBkYXRlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Mo Dawoud/Desktop/front/RichManClient/Pages/Cloth/AddCloth.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2xvdGhcQWRkQ2xvdGgucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Mo Dawoud/Desktop/front/RichManClient/Pages/Cloth/ClothSearch.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2xvdGhcQ2xvdGhTZWFyY2gucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Mo Dawoud/Desktop/front/RichManClient/Pages/Cloth/DetailedCloth.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2xvdGhcRGV0YWlsZWRDbG90aC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Mo Dawoud/Desktop/front/RichManClient/Pages/Cloth/FetchData.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2xvdGhcRmV0Y2hEYXRhLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Mo Dawoud/Desktop/front/RichManClient/Pages/Cloth/Statics.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2xvdGhcU3RhdGljcy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Mo Dawoud/Desktop/front/RichManClient/Pages/Cloth/Update.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2xvdGhcVXBkYXRlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Mo Dawoud/Desktop/front/RichManClient/Pages/Index.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW5kZXgucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Mo Dawoud/Desktop/front/RichManClient/Pages/Save/DeleteReasons.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2F2ZVxEZWxldGVSZWFzb25zLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Mo Dawoud/Desktop/front/RichManClient/Pages/Save/Save.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2F2ZVxTYXZlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Mo Dawoud/Desktop/front/RichManClient/Shared/SurveyPrompt.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXFN1cnZleVByb21wdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Mo Dawoud/Desktop/front/RichManClient/_Imports.razor]
+build_metadata.AdditionalFiles.TargetPath = X0ltcG9ydHMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Mo Dawoud/Desktop/front/RichManClient/Shared/MainLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXE1haW5MYXlvdXQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-86hzsli7a0
+
+[C:/Users/Mo Dawoud/Desktop/front/RichManClient/Shared/NavMenu.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXE5hdk1lbnUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-w7giprbrat

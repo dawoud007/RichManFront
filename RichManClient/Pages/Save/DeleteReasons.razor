@@ -1,0 +1,59 @@
+﻿@page "/delete-reasons/{shopName}"
+
+@inject HttpClient Http
+@inject SharedStateService SharedStateService
+@using RichMan.Models
+<h3>اسباب المسح</h3>
+
+@if (deleteReasons != null && deleteReasons.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>الكمية</th>
+                <th>اسم الشخص</th>
+                <th>السبب</th>
+                <th>التاريخ</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var reason in deleteReasons)
+            {
+                <tr>
+                    <td>@reason.amount</td>
+                    <td>@reason.workerName</td>
+                    <td>@reason.DeleteReasonDetails</td>
+                    <td>@reason.DeleteData.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>لم يتم مسح شي @ShopName.</p>
+}
+
+@code {
+   [Parameter] public string ShopName { get; set; }
+
+    private List<DeleteReason> deleteReasons;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var token = await AuthService.GetAccessTokenAsync();
+            if (!string.IsNullOrEmpty(token))
+            {
+                Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+
+            deleteReasons = await Http.GetFromJsonAsync<List<DeleteReason>>(SharedStateService.Api_Uri+"Bill/GetAllDeleteResons");
+        }
+        catch (Exception ex)
+        {
+            // Handle error
+        }
+    }
+}

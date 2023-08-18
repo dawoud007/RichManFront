@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+https://go.microsoft.com/fwlink/?LinkID=208121.
+-->
+<Project>
+  <PropertyGroup>
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+    <EncryptedPassword>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAKz/VEMPOC0iooWid421p1AAAAAACAAAAAAAQZgAAAAEAACAAAAAkkayOiFDp4UYcz98BqQwU/rnMJtkbe2hCZAOIO+RqmgAAAAAOgAAAAAIAACAAAABt6lnQZvWcLzBlXLtngoCtxMn6Wo6l5hp+jE2UaNnCSEAAAAABKhmFgJzcohS6mPpHxbkGp6aV61WjImC7Fg9/vhQ/gRfRnTqV8IrdaIlne64k3vEFZsFA9lViVHdto37/9gABQAAAAOXuaBZ6VBFUC5gRFoNlnnuFLg6mcTyMBjrCfhxQn6ilm+0Cjr5vJ6A3iIGxBgROttbZwVGdtgaAsqAOjwXxB5Q=</EncryptedPassword>
+    <History>False|2023-08-18T15:38:09.6889646Z;</History>
+    <LastFailureDetails />
+    <_PublishTargetUrl>ftp://richman.somee.com/www.Richman.somee.com</_PublishTargetUrl>
+  </PropertyGroup>
+  <ItemGroup>
+    <File Include="web.config">
+      <publishTime>01/24/2023 19:32:00</publishTime>
+    </File>
+    <File Include="wwwroot/css/app.css">
+      <publishTime>08/13/2023 09:13:54</publishTime>
+    </File>
+    <File Include="wwwroot/css/bootstrap-grid.css">
+      <publishTime>07/26/2023 17:36:26</publishTime>
+    </File>
+    <File Include="wwwroot/css/bootstrap-grid.css.map">
+      <publishTime>07/26/2023 17:36:26</publishTime>
+    </File>
+    <File Include="wwwroot/css/bootstrap-grid.min.css">
+      <publishTime>07/26/2023 17:36:26</publishTime>
+    </File>
+    <File Include="wwwroot/css/bootstrap-grid.min.css.map">
+      <publishTime>07/26/2023 17:36:26</publishTime>
+    </File>
+    <File Include="wwwroot/css/bootstrap-grid.rtl.css">
+      <publishTime>07/26/2023 17:36:26</publishTime>
+    </File>
+    <File Include="wwwroot/css/bootstrap-grid.rtl.css.map">
+      <publishTime>07/26/2023 17:36:26</publishTime>
+    </File>
+    <File Include="wwwroot/css/bootstrap-grid.rtl.min.css">
+      <publishTime>07/26/2023 17:36:26</publishTime>
+    </File>
+    <File Include="wwwroot/css/bootstrap-grid.rtl.min.css.map">
+      <publishTime>07/26/2023 17:36:26</publishTime>
+    </File>
+    <File Include="wwwroot/css/bootstrap-reboot.css">
+      <publishTime>07/26/2023 17:36:26</publishTime>
+    </File>
+    <File Include="wwwroot/css/bootstrap-reboot.css.map">
+      <publishTime>07/26/2023 17:36:26</publishTime>
+    </File>
+    <File Include="wwwroot/css/bootstrap-reboot.min.css">
+      <publishTime>07/26/2023 17:36:26</publishTime>
+    </File>
+    <File Include="wwwroot/css/bootstrap-reboot.min.css.map">
+      <publishTime>07/26/2023 17:36:26</publishTime>
+    </File>
+    <File Include="wwwroot/css/bootstrap-reboot.rtl.css">
+      <publishTime>07/26/2023 17:36:26</publishTime>
+    </File>
+    <File Include="wwwroot/css/bootstrap-reboot.rtl.css.map">
+      <publishTime>07/26/2023 17:36:26</publishTime>
+    </File>
+    <File Include="wwwroot/css/bootstrap-reboot.rtl.min.css">
+      <publishTime>07/26/2023 17:36:26</publishTime>
+    </File>
+    <File Include="wwwroot/css/bootstrap-reboot.rtl.min.css.map">
+      <publishTime>07/26/2023 17:36:26</publishTime>
+    </File>
+    <File Include="wwwroot/css/bootstrap-utilities.css">
+      <publishTime>08/06/2023 03:06:20</publishTime>
+    </File>
+    <File Include="wwwroot/css/bootstrap-utilities.css.map">
+      <publishTime>07/26/2023 17:36:26</publishTime>
+    </File>
+    <File Include="wwwroot/css/bootstrap-utilities.min.css">
+      <publishTime>07/26/2023 17:36:26</publishTime>
+    </File>
+    <File Include="wwwroot/css/bootstrap-utilities.min.css.map">
+      <publishTime>07/26/2023 17:36:26</publishTime>
+    </File>
+    <File Include="wwwroot/css/bootstrap-utilities.rtl.css">
+      <publishTime>07/26/2023 17:36:26</publishTime>
+    </File>
+    <File Include="wwwroot/css/bootstrap-utilities.rtl.css.map">
+      <publishTime>07/26/2023 17:36:26</publishTime>
+    </File>
+    <File Include="wwwroot/css/bootstrap-utilities.rtl.min.css">
+      <publishTime>07/26/2023 17:36:26</publishTime>
+    </File>
+    <File Include="wwwroot/css/bootstrap-utilities.rtl.min.css.map">
+      <publishTime>07/26/2023 17:36:26</publishTime>
+    </File>
+    <File Include="wwwroot/favicon.ico">
+      <publishTime>08/10/2023 09:43:41</publishTime>
+    </File>
+    <File Include="wwwroot/icon-192.png">
+      <publishTime>08/10/2023 09:43:41</publishTime>
+    </File>
+    <File Include="wwwroot/index.html">
+      <publishTime>08/14/2023 00:09:35</publishTime>
+    </File>
+    <File Include="wwwroot/RichManClient.styles.css">
+      <publishTime>08/18/2023 17:00:41</publishTime>
+    </File>
+  </ItemGroup>
+</Project>

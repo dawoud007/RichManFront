@@ -1,0 +1,77 @@
+﻿@page "/clothdetail/{clothId}"
+@using ElectronicsShop_service.Models
+@inject HttpClient Http
+@inject AuthService AuthService
+@inject NavigationManager NavigationManager
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <h3>تفاصيل القطعة</h3>
+            @if (cloth != null)
+            {
+                <div>
+                    <p><strong>الاسم:</strong> @cloth.Name</p>
+                    <p><strong>اللون:</strong> @cloth.Color</p>
+                    <p><strong>المقاس:</strong> @cloth.Size</p>
+                    <p><strong>الماركة:</strong> @cloth.type</p>
+                    <p><strong>عدد القطع:</strong> @cloth.NumOfPieces</p>
+                 
+                    @if (!string.IsNullOrEmpty(cloth.Note))
+                    {
+                        <p><strong>ملاحظة:</strong> @cloth.Note</p>
+                    }
+                </div>
+            }
+            else
+            {
+                <p>تحميل.....</p>
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Add your custom styles here */
+    .container {
+        background-color: #eaf2f8;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        color: black;
+    }
+
+    h3 {
+        color: #007bff;
+    }
+</style>
+
+@code {
+        [Parameter]
+        public Guid ClothId { get; set; }
+
+    private Cloth cloth;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Get the JWT token from the AuthService
+        var token = await AuthService.GetAccessTokenAsync();
+        // Set the authorization header for the HttpClient
+        if (!string.IsNullOrEmpty(token))
+        {
+            Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+        }
+
+        // Make the API call to get the cloth detail
+        try
+        {
+            cloth = await Http.GetFromJsonAsync<Cloth>(sharedStateService.Api_Uri + "Cloth/Get/" + ClothId);
+          
+        }
+        catch (Exception ex)
+        {
+            // Handle any errors during the API call
+            // You can display an error message to the user or log the error for debugging
+        }
+    }
+}

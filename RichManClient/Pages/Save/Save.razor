@@ -1,0 +1,289 @@
+﻿@page "/money-dashboard"
+@using System.IdentityModel.Tokens.Jwt
+@using RichMan.Models
+@using Microsoft.JSInterop
+@using Newtonsoft.Json
+@using System.Text
+@using System.Text.Json.Serialization
+@using ElectronicsShop_service.Models
+@inject HttpClient Http
+@inject AuthService AuthService
+@inject SharedStateService sharedStateService
+<style>
+    /* Add your custom styles here */
+    .form-group label {
+        font-weight: bold;
+    }
+
+    .form-control {
+        border-color: blue;
+        width: 60%;
+    }
+
+    .btn-primary {
+        background-color: #11d;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 20px;
+        font-weight: bold;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+        .btn-primary:hover {
+            background-color: #0a0a8b; /* Slightly darker color on hover */
+            color: white;
+        }
+
+    .container {
+        width: 90%;
+        background-color: #f5f5f5;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .styled-container {
+        display: flex;
+        justify-content: space-between;
+        width: 80%;
+        background-color: #f5f5f5; /* Adding a light background color */
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        color: #000;
+        padding: 1.5rem;
+        border-radius: 10px;
+        margin-bottom: 1rem;
+    }
+
+    .money-values {
+        width: 40%;
+        font-weight: bold;
+    }
+
+    .form-section {
+        width: 58%;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    h3,
+    h4 {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #000;
+    }
+</style>
+
+<div class="container form-container">
+
+    <h3>Money Dashboard</h3>
+
+    <div class="styled-container">
+        <div class="money-values">
+            <p><strong>الكمية في الدرج</strong> @money.MoneyInBox جنيه</p>
+            <p><strong>الكمية في الفيزا</strong> @money.MoneyInVisa جنيه</p>
+        </div>
+
+        <div class="form-section">
+            <!-- Add Money Section -->
+            <div class="money-section">
+                <h4>اضافة</h4>
+                <div class="form-group">
+                    <label for="addAmount">الكمية:</label>
+                    <input type="number" class="form-control" id="addAmount" @bind="moneyUpdateDto.Amount">
+                </div>
+                <div class="form-group">
+                    <label for="addAccountType">ادخال الى:</label>
+                    <select class="form-control" id="addAccountType" @bind="moneyUpdateDto.AccountType">
+                        <option value="Box">الدرج</option>
+                        <option value="Visa">الفيزا</option>
+                    </select>
+                </div>
+                <button class="btn-primary" @onclick="AddMoney">اضافة</button>
+                @if (isMoneyAdded)
+                {
+                    <div class="alert alert-success mt-3">
+                        تمت الاضافة بنجاح
+                    </div>
+                }
+            </div>
+
+            <!-- Delete Money Section -->
+            <div class="money-section">
+                <h4>مسح كمية</h4>
+                <div class="form-group">
+                    <label for="deleteAmount">الكمية:</label>
+                    <input type="number" class="form-control" id="deleteAmount" @bind="moneyDeleteDto.Amount">
+                </div>
+                <div class="form-group">
+
+
+                 
+                        <label>اسم العامل</label>
+                    <select class="form-control" @onclick="FetchWorkers" @bind="@moneyDeleteDto.WorkerName">
+                            <option value="">اختر العامل</option>
+                            @foreach (var worker in Workers)
+                            {
+                                <option value="@worker.WorkerName">@worker.WorkerName</option>
+                            }
+                        </select>
+                 
+
+                    <label for="deleteAccountType">ادخال الى:</label>
+                    <select class="form-control" id="deleteAccountType" @bind="moneyDeleteDto.AccountType">
+                        <option value="Box">الدرج</option>
+                        <option value="Visa">الفيزا</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="deleteReason">سبب المسح:</label>
+                    <input type="text" class="form-control" id="deleteReason" @bind="moneyDeleteDto.DeleteReason">
+                </div>
+                <button class="btn-primary" @onclick="DeleteMoney">مسح</button>
+                @if (isMoneyDeleted)
+                {
+                    <div class="alert alert-success mt-3">
+                        تم المسح
+                    </div>
+                }
+                <div>
+                    <button class="btn btn-info" @onclick="() => NavigateToDeleteReasons(successMessage)">دخول</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+@code {
+    private Money money = new Money();
+    private MoneyUpdateDto moneyUpdateDto = new();
+    private MoneyDeleteDto moneyDeleteDto = new();
+    private string successMessage = string.Empty;
+    private bool isMoneyAdded = false;
+    private bool isMoneyDeleted = false;
+    private List<Worker> Workers { get; set; } = new List<Worker>();
+
+    private async Task FetchWorkers()
+    {
+        try
+        {
+            Workers = await Http.GetFromJsonAsync<List<Worker>>(sharedStateService.Api_Uri + "Shop/GetWorkersToShop");
+        }
+        catch (Exception ex)
+        {
+            // Handle API call errors
+        }
+    }
+
+    private async Task GetMoney()
+    {
+        var token = await AuthService.GetAccessTokenAsync();
+
+        // Set the authorization header for the HttpClient
+        if (!string.IsNullOrEmpty(token))
+        {
+            Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+            // Extract and display shopName claim
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var jwtToken = tokenHandler.ReadJwtToken(token);
+
+            // Extract and display shopName claim
+            if (jwtToken.Payload.TryGetValue("WhatToSee", out var shopNameClaim))
+            {
+                successMessage = $"{shopNameClaim}";
+            }
+
+        }
+
+        try
+        {
+            money = await Http.GetFromJsonAsync<Money>(sharedStateService.Api_Uri + "Bill/GetMoney/get-money");
+        }
+        catch (Exception ex)
+        {
+            // Handle any errors during the API call
+            // You can display an error message to the user or log the error for debugging
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetMoney();
+    }
+
+    private async Task AddMoney()
+    {
+        var token = await AuthService.GetAccessTokenAsync();
+
+        // Set the authorization header for the HttpClient
+        if (!string.IsNullOrEmpty(token))
+        {
+            Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+        }
+
+        var response = await Http.PostAsJsonAsync(sharedStateService.Api_Uri + "Bill/AddMoneyToAccount/add-money", moneyUpdateDto);
+
+        if (response.IsSuccessStatusCode)
+        {
+            isMoneyAdded = true;
+            await GetMoney(); // Update the money object
+            moneyUpdateDto = new MoneyUpdateDto();
+        }
+        else
+        {
+            isMoneyAdded = false;
+        }
+    }
+
+    private async Task DeleteMoney()
+    {
+        var token = await AuthService.GetAccessTokenAsync();
+
+        // Set the authorization header for the HttpClient
+        if (!string.IsNullOrEmpty(token))
+        {
+            Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+        }
+
+        try
+        {
+            var response = await Http.PostAsJsonAsync(sharedStateService.Api_Uri + "Bill/DeleteMoneyFromAccount/delete-money", moneyDeleteDto);
+
+            if (response.IsSuccessStatusCode)
+            {
+                isMoneyDeleted = true;
+                await GetMoney(); // Update the money object
+                moneyDeleteDto = new MoneyDeleteDto();
+            }
+            else
+            {
+                isMoneyDeleted = false;
+            }
+        }
+        catch (Exception ex)
+        {
+            // Handle any exceptions during the API call
+            isMoneyDeleted = false;
+            // You can display an error message to the user or log the error for debugging
+        }
+
+
+    }
+    void NavigateToDeleteReasons(string shopName)
+    {
+        NavigationManager.NavigateTo($"/delete-reasons/{shopName}");
+    }
+}
